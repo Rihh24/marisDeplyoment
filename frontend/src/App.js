@@ -11,7 +11,7 @@ import Footer from './Components/Footer/Footer';
 import men_banner from './Components/Assets/banner_mens.webp'
 import women_banner from './Components/Assets/banner_women.png'
 import kid_banner from './Components/Assets/banner_kids.png'
-import Admin from '../admin/Admin/Admin'; // Adjust the path based on your folder structure
+
 
 
 
@@ -34,7 +34,6 @@ function App() {
         </Route>
         <Route path='/cart' element={<Cart/>}/>
         <Route path='/login' element={<LoginSignUp/>}/>
-        <Route path='/admin' element={<Admin/>} />
       </Routes>
       <Footer/>
       </BrowserRouter>

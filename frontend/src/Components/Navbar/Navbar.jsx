@@ -35,7 +35,6 @@ const Navbar = () => {
             <li onClick={() =>{setMenu("disposables"); handleMenuItemClick()}}><Link to='/disposables' >Disposables</Link>{menu==="disposables"?<hr/>:<></>}</li>
             <li onClick={() =>{setMenu("concentrates"); handleMenuItemClick()}}><Link to='/concentrates'>Concentrates</Link>{menu==="concentrates"?<hr/>:<></>}</li>
             <li onClick={() =>{setMenu("prerolls"); handleMenuItemClick()}}><Link to='/prerolls'>Pre-Rolls</Link>{menu==="prerolls"?<hr/>:<></>}</li>
-            <li onClick={() =>{setMenu("admin"); handleMenuItemClick()}}><Link to='/admin'>Admin</Link>{menu==="admin"?<hr/>:<></>}</li>
 
         </ul>
         <div className='nav-login-cart'>

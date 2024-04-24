@@ -7,10 +7,10 @@ const path = require("path");
 const cors = require("cors");
 
 // Load environment variables from .env file
-const { MONGO_DB_CONNECTION, PORT } = process.env;
+const { MONGODB_URI, PORT } = process.env;
 
 // Database Connection With MongoDB
-mongoose.connect(MONGO_DB_CONNECTION);
+mongoose.connect(MONGODB_URI);
 
 app.use(express.json());
 app.use(cors());
