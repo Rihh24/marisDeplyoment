@@ -1,4 +1,5 @@
-require('dotenv').config(); // Import dotenv for environment variables
+// Import required modules
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -6,12 +7,13 @@ const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
 
-// Load environment variables from .env file
+// Load environment variables
 const { MONGODB_URI, PORT } = process.env;
 
 // Database Connection With MongoDB
 mongoose.connect(MONGODB_URI);
 
+// Middleware setup
 app.use(express.json());
 app.use(cors());
 
@@ -21,7 +23,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const extension = path.extname(file.originalname);
-        cb(null,`${file.fieldname}_${uniqueSuffix}${extension}`)
+        cb(null, `${file.fieldname}_${uniqueSuffix}${extension}`);
     }
 });
 
@@ -36,7 +38,7 @@ const upload = multer({ storage: storage }).fields([
 // Serve static files from the upload directory
 app.use('/images', express.static('upload/images'));
 
-// Schema for creating products
+// Define Product schema
 const Product = mongoose.model("Product", {
     id: {
         type: Number,
@@ -46,50 +48,17 @@ const Product = mongoose.model("Product", {
         type: String,
         required: true,
     },
-    description: {
-        type: String,
-        required: false
-    },
-    lineage: {
-        type: String,
-        required: false,
-    },
-    category: {
-        type: String,
-        required: false,
-    },
-    type: {
-        type: String,
-        required: false,
-    },
-    brand: {
-        type: String,
-        required: false,
-    },
-    image: {
-        type: String,
-        required: true,
-    },
-    image2: {
-        type: String,
-        required: false,
-    },
-    image3: {
-        type: String,
-        required: false
-    },
-    image4: {
-        type: String,
-        required: false,
-    },
-    new_price: {
-        type: Number,
-        required: true,
-    },
-    old_price: {
-        type: Number,
-        required: false,
-    },
+    description: String,
+    lineage: String,
+    category: String,
+    type: String,
+    brand: String,
+    image: String,
+    image2: String,
+    image3: String,
+    image4: String,
+    new_price: Number,
+    old_price: Number,
     date: {
         type: Date,
         default: Date.now,
@@ -102,17 +71,9 @@ const Product = mongoose.model("Product", {
 
 // Endpoint to add a product
 app.post('/addproduct', upload, async (req, res) => {
-    let products = await Product.find({})
-    let id;
-    if(products.length>0)
-    {
-        let last_product_array = products.slice(-1)
-        let last_product = last_product_array[0]
-        id = last_product.id+1
-    }
-    else{
-        id=1;
-    }
+    let products = await Product.find({});
+    let id = products.length > 0 ? products[products.length - 1].id + 1 : 1;
+
     try {
         // Construct image URLs
         const imageUrls = {
@@ -161,33 +122,41 @@ app.get('/allproducts', async (req, res) => {
     }
 });
 
-//api for deleting
-app.post('/removeproduct', async (req, res)=>{
-    await Product.findOneAndDelete({id:req.body.id})
-    console.log("Removed")
-    res.json({
-        success:true,
-        name:req.body.name
-    })
-})
+// Endpoint for deleting a product
+app.post('/removeproduct', async (req, res) => {
+    try {
+        await Product.findOneAndDelete({ id: req.body.id });
+        console.log("Removed");
+        res.json({
+            success: true,
+            name: req.body.name
+        });
+    } catch (error) {
+        console.error('Error removing product:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
-//Endpoint for newcollection data
-app.get('/newcollections', async (req, res)=>{
-    let products = await Product.find({});
-    let newCollection = products.slice(1).slice(-8)
-    console.log("NewCollection Fetched");
-    res.send(newCollection);
-})
+// Endpoint for fetching new collections
+app.get('/newcollections', async (req, res) => {
+    try {
+        let products = await Product.find({});
+        let newCollection = products.slice(1).slice(-8);
+        console.log("NewCollection Fetched");
+        res.send(newCollection);
+    } catch (error) {
+        console.error('Error fetching new collections:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
-//endpoint for addtocart
-app.post('/addtocart', async(req,res)=>{})
+// Endpoint for adding to cart
+app.post('/addtocart', async (req, res) => {
+    // Your code for adding to cart
+});
 
 // Start the server
 const port = PORT || 4000; // Use PORT from environment variable or default to 4000
-app.listen(port, (error) => {
-    if (!error) {
-        console.log("Server Running on Port " + port)
-    } else {
-        console.log("Error: " + error)
-    }
+app.listen(port, () => {
+    console.log(`Server Running on Port ${port}`);
 });
